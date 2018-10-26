@@ -6,6 +6,11 @@ public class Main {
     private static final String TEST_KEY = "Password";
     private static final byte[][] RANDOM_STRINGS = new RandomStringGenerator().generateStringBytes(STRING_COUNT, STRING_LENGTH);
 
+    /**
+     * Should not require java 8+
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         CryptoService aesService = new CryptoService("AES", "AES/CBC/PKCS5Padding");
         CryptoService desService = new CryptoService("DES", "DES/CBC/PKCS5Padding");
