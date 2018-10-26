@@ -11,6 +11,7 @@ import java.security.SecureRandom;
  * Notes:
  * Crypto service has only been tested with AES/CBC and DES/CBC (poorly)
  * Crypto service will not work with ECB.
+ * @author Justin Sexton
  */
 public class CryptoService {
     private final String HASH_ALGORITHM;
