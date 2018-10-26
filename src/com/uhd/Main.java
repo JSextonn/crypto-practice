@@ -1,42 +1,54 @@
 package com.uhd;
 
-import java.util.Random;
-
 public class Main {
-    private static final String PLAIN = "This is the plain text";
-    private static final String KEY = "Password";
+    private static final int STRING_COUNT = 100;
+    private static final int STRING_LENGTH = 50;
+    private static final String TEST_KEY = "Password";
+    private static final byte[][] RANDOM_STRINGS = new RandomStringGenerator().generateStringBytes(STRING_COUNT, STRING_LENGTH);
 
     public static void main(String[] args) throws Exception {
-        Random rand = new Random();
-        byte [][] randomStrings = new byte[100][50];
-        long before, aesMillis, desMillis;
-
-        for (int i = 0; i < 100; i++)
-            for (int j = 0; j < 50; j++)
-                randomStrings[i][j] = (byte)(rand.nextInt(96) + 32);
-        for (int i = 0; i < 100; i++)
-            System.out.println(new String(randomStrings[i]));
-        // Aes encryption examples
         CryptoService aesService = new CryptoService("AES", "AES/CBC/PKCS5Padding");
         CryptoService desService = new CryptoService("DES", "DES/CBC/PKCS5Padding");
 
-        before = System.currentTimeMillis();
-        for (int i = 0; i < 100; i++) {
-            byte[] aesCipher = aesService.encrypt(randomStrings[i], KEY);
+        // Test aes and des algorithms against the same randomly generated strings.
+        EncryptionTestResult aesTestResult = testCryptoService(aesService);
+        EncryptionTestResult desTestResult = testCryptoService(desService);
+
+        System.out.println(String.format(
+                "Aes: %s seconds, Decrypted Successfully: %s\nDes: %s seconds, Decrypted Successfully: %s",
+                aesTestResult.getTimeTookInSeconds(),
+                aesTestResult.allDecryptedSuccessfully(),
+                desTestResult.getTimeTookInSeconds(),
+                desTestResult.allDecryptedSuccessfully()));
+    }
+
+    /**
+     * Method responsible for running all tests and encapsulating the results.
+     * @param service The service that will be used to encrypt and decrypt the random strings.
+     * @return The test results
+     * @throws Exception
+     */
+    private static EncryptionTestResult testCryptoService(CryptoService service) throws Exception {
+        // Encryption process
+        byte[][] ciphers = new byte[STRING_COUNT][];
+        long before = System.nanoTime();
+        for (int i = 0; i < STRING_COUNT; i++) {
+            ciphers[i] = service.encrypt(RANDOM_STRINGS[i], TEST_KEY);
         }
-        aesMillis = System.currentTimeMillis() - before;
+        long nanoes = System.nanoTime() - before;
 
-        //System.out.println(aesService.decrypt(aesCipher, KEY));
-
-        // Des encryption examples
-        before = System.currentTimeMillis();
-        for (int i = 0; i < 100; i++) {
-            byte[] desCipher = desService.encrypt(randomStrings[i], KEY);
+        // Decryption process
+        // Make sure the ciphers can be decrypted back to their original bodies.
+        // We could perform the decryption process during the encryption process but this would
+        // effect the timing results. We only want to capture the time it takes to encrypt.
+        boolean decryptedCorrectly = true;
+        for (int i = 0; i < STRING_COUNT; i++) {
+            if (!service.decrypt(ciphers[i], TEST_KEY).equals(new String(RANDOM_STRINGS[i]))) {
+                decryptedCorrectly = false;
+                break;
+            }
         }
-        desMillis = System.currentTimeMillis() - before;
 
-        System.out.println("AES " + aesMillis + ", DES " + desMillis);
-        //System.out.println(new String(desCipher));
-        //System.out.println(desService.decrypt(desCipher, KEY));
+        return new EncryptionTestResult(nanoes, RANDOM_STRINGS, ciphers, decryptedCorrectly);
     }
 }
