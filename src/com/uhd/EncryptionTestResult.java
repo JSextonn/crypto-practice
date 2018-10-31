@@ -32,46 +32,15 @@ public class EncryptionTestResult {
         return this.testBytes;
     }
 
-    public String[] getTestBytesAsHex() {
-        return this.toHexStrings(this.testBytes);
-    }
-
     public byte[][] getCiphers() {
         return this.ciphers;
-    }
-
-    public String[] getCiphersAsHex() {
-        return toHexStrings(this.ciphers);
     }
 
     public String getKey() {
         return this.key;
     }
 
-    public String getKeyAsHex() {
-        return toHexString(this.key.getBytes());
-    }
-
     public boolean allDecryptedSuccessfully() {
         return this.decryptedSuccessfully;
-    }
-
-    private String toHexString(final byte[] bytes) {
-        final char[] hexArray = "0123456789ABCDEF".toCharArray();
-        char[] hexCharacters = new char[bytes.length * 2];
-        for (int i = 0; i < bytes.length; i++) {
-            int v = bytes[i] & 0xFF;
-            hexCharacters[i * 2] = hexArray[v >>> 4];
-            hexCharacters[i * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexCharacters);
-    }
-
-    private String[] toHexStrings(final byte[][] bytes) {
-        String[] hexArray = new String[bytes.length];
-        for (int i = 0; i < bytes.length; i++) {
-            hexArray[i] = toHexString(bytes[i]);
-        }
-        return hexArray;
     }
 }

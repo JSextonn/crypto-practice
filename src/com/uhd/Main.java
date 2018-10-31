@@ -37,12 +37,12 @@ public class Main {
                 result.getTimeTookInSeconds(),
                 result.allDecryptedSuccessfully()));
 
-        System.out.println(String.format("Key used: %s", result.getKeyAsHex()));
+        System.out.println(String.format("Key used: %s", Convert.toHexString(result.getKey().getBytes())));
 
         System.out.println("Plain Hexes");
-        System.out.println(String.join("\n", result.getTestBytesAsHex()));
+        System.out.println(String.join("\n", Convert.toHexStrings(result.getTestBytes())));
 
         System.out.println("Cipher Hexes");
-        System.out.println(String.join("\n", result.getCiphersAsHex()));
+        System.out.println(String.join("\n", Convert.toHexStrings(result.getCiphers())));
     }
 }
