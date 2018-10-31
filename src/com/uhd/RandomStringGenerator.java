@@ -1,15 +1,12 @@
 package com.uhd;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Jason Brunelle
  */
 public class RandomStringGenerator {
-    private Random rand;
-
     public RandomStringGenerator() {
-        this.rand = new Random();
     }
 
     public byte[][] generateStringBytes(final int count, final int length) {
@@ -17,7 +14,7 @@ public class RandomStringGenerator {
 
         for (int i = 0; i < count; i++) {
             for (int j = 0; j < length; j++) {
-                randomStrings[i][j] = (byte) (rand.nextInt(96) + 32);
+                randomStrings[i][j] = (byte) ThreadLocalRandom.current().nextInt(32, 126 + 1);
             }
         }
 
