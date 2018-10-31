@@ -12,9 +12,9 @@ public final class Convert {
         int skip = 2;
         int length = bytes.length * 2;
 
+        // Edit variables to comply with separation functionality
         if (separate) {
-            // Edit to comply with separation functionality
-            // Add the spaces needed for each space
+            // Add the extra length needed for each space
             length += bytes.length - 1;
             // When adding spaces, the loop will add the two hex characters and the space.
             // Therefore the loop will need to count by threes.
